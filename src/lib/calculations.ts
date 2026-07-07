@@ -22,7 +22,7 @@ export interface BillTotals {
  * or extra pennies from naive per-person rounding).
  */
 export function computeTotals(state: BillState): BillTotals {
-  const { people, items, taxPercent, tipPercent } = state;
+  const { people, items, taxMode, taxValue, tipPercent } = state;
 
   const subtotal = round2(items.reduce((sum, item) => sum + item.price, 0));
   const unassignedAmount = round2(
@@ -32,7 +32,7 @@ export function computeTotals(state: BillState): BillTotals {
   );
   const assignedSubtotal = round2(subtotal - unassignedAmount);
 
-  const taxAmount = round2((subtotal * taxPercent) / 100);
+  const taxAmount = round2(taxMode === "percent" ? (subtotal * taxValue) / 100 : taxValue);
   const tipAmount = round2((subtotal * tipPercent) / 100);
   const grandTotal = round2(subtotal + taxAmount + tipAmount);
 

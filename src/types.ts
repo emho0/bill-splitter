@@ -13,7 +13,8 @@ export interface Item {
 export interface BillState {
   people: Person[];
   items: Item[];
-  taxPercent: number;
+  taxMode: "percent" | "amount";
+  taxValue: number; // interpreted as a percent or a flat dollar amount depending on taxMode
   tipPercent: number;
 }
 

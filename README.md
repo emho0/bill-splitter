@@ -59,9 +59,23 @@ UI, so it's easy to unit test or reason about on its own.
   method, so they always add up exactly to the grand total (no stray pennies
   lost or gained to rounding).
 
+## Receipt scanning
+
+Uploading a receipt photo runs OCR fully in the browser via
+[Tesseract.js](https://github.com/naptha/tesseract.js) (WebAssembly) — no
+server, no API key. The first scan in a session downloads Tesseract's
+language data over the network (a few MB, cached afterward), so an internet
+connection is needed the first time, even though there's no custom backend.
+
+`src/lib/receiptParser.ts` turns the raw OCR text into candidate items plus
+detected subtotal/tax/tip/total using line-pattern matching — it's a plain
+function with no dependencies, so it's easy to test on its own with sample
+receipt text. `src/components/ReceiptScanner.tsx` handles the upload, shows
+OCR progress, and lets the user review/edit/uncheck items before anything is
+added to the bill (OCR is never applied blindly).
+
 ## Possible next steps
 
 - Persist state to `localStorage` so a refresh doesn't lose your bill
-- Receipt photo upload + OCR to auto-fill items
 - Split by percentage/exact amount instead of only "even split"
 - Export/share the summary (copy as text, or a shareable link)
